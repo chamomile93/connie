@@ -1,1 +1,4 @@
 apply plugin: 'sablecc'
+
+// Fix task dependency issue
+processResources.dependsOn generateGrammarSource

@@ -18,3 +18,5 @@ build/
 **/out/
 /bugs.txt
 /infer-out/
+
+.vscode/
