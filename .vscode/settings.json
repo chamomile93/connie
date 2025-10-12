@@ -1,0 +1,7 @@
+{
+    "terminal.integrated.scrollback": 100000
+}
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic"
+}

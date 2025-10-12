@@ -1,0 +1,24 @@
+   // --------------------------------------------------------------------------------------
+   // Keywords
+   // --------------------------------------------------------------------------------------
+
+   // FML Keywords filtered by state !({normal})
+
+   {normal,binding} kw_as = 'as';
+   {normal,binding} kw_begin = 'begin';
+   {normal,binding} kw_extends = 'extends';
+   {normal,binding} kw_from = 'from';
+   {normal,binding} kw_instanceof = 'instanceof';
+   {normal,binding} kw_match = 'match';
+   {normal,binding} kw_required = 'required';
+   {normal,binding} kw_select = 'select';
+   {normal,binding} kw_unique = 'unique';
+   {normal,binding} kw_where = 'where';
+   {normal -> binding} kw_import = 'import';
+   {normal -> binding} kw_use = 'use';
+   {normal -> binding} kw_values = 'values';
+   {normal -> binding,command,script} kw_log = 'log';
+   {command,script,normal} kw_assert = 'assert';
+   {normal,binding,command,script} kw_new = 'new';
+   {normal,binding,command,script} kw_with = 'with';
+ 

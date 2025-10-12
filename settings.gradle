@@ -1,2 +1,3 @@
 rootProject.name = 'connie'
 include 'testutils', 'connie-utils','connie-core', 'default-parser', 'default-expression-language', 'java-parser', 'java-expression-language' 
+// why not include connie-parser ?
