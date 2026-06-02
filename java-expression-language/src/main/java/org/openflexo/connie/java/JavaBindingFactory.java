@@ -65,6 +65,7 @@ import org.openflexo.connie.java.parser.ExpressionParser;
  *
  */
 public class JavaBindingFactory extends JavaBasedBindingFactory {
+	//TODO idf why this is instanciated in XMLSerializer and passed to JavaBindingEvaluator.evaluateBinding
 	static final Logger logger = Logger.getLogger(JavaBindingFactory.class.getPackage().getName());
 
 	@Override

@@ -96,8 +96,9 @@ final public class JavaBindingEvaluator extends BindingEvaluator {
 
 	public static Object evaluateBinding(String bindingPath, Object object, BindingFactory bindingFactory)
 			throws InvalidKeyValuePropertyException, TypeMismatchException, NullReferenceException, ReflectiveOperationException {
-
-		return evaluateBinding(bindingPath, object, object != null ? object.getClass() : null, bindingFactory);
+		//TODO idf I am coming here from XMLSerializer.generateReference(o, xmlElement) in testing Serialization of o=FlexoProcess, xmlElement=xmlProxyHandle
+		Type objectType = object != null ? object.getClass() : null;
+		return evaluateBinding(bindingPath, object, objectType, bindingFactory);
 	}
 
 	public static Object evaluateBinding(String bindingPath, Object object)

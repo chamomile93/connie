@@ -78,6 +78,7 @@ import org.openflexo.connie.type.UnresolvedType;
  *
  */
 public abstract class JavaBasedBindingFactory implements BindingFactory {
+	//TODO idf what is this doing
 	static final Logger logger = Logger.getLogger(JavaBasedBindingFactory.class.getPackage().getName());
 
 	private Map<Type, List<? extends SimplePathElement<?>>> accessibleSimplePathElements = new HashMap<>();

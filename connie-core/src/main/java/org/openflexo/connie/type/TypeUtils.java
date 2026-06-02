@@ -1255,6 +1255,10 @@ public class TypeUtils {
 	 * @return
 	 */
 	public static <T> T objectForClass(Class<?> aClass, Map<Class<?>, T> storedObjectForClasses, boolean storeResultInMap) {
+		// TODO i came here why serializing the IAuthenticator SerializationTest case. It looped back on it's super interface which at the moment didn't yield something else than null
+		//TODO idf, given that aClass is the class of , an instance of a FlexoProcess which is , an instance of a PMF
+		// given that storeResultInMap=false
+		// given that probablt storedObjectForClasses=null, when coming from StringEncoder at this point
 		if (aClass == null) {
 			return null;
 		}

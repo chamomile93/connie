@@ -138,6 +138,7 @@ public abstract class BindingEvaluator extends AbstractBindingEvaluator {
 	@Override
 	protected Object evaluate(String bindingPath)
 			throws InvalidKeyValuePropertyException, TypeMismatchException, NullReferenceException, ReflectiveOperationException {
+		//TODO idf what is this doing
 		String normalizedBindingPath = normalizeBindingPath(bindingPath);
 		DataBinding<?> binding = new DataBinding<>(normalizedBindingPath, this, Object.class, DataBinding.BindingDefinitionType.GET);
 		if (!binding.isValid()) {

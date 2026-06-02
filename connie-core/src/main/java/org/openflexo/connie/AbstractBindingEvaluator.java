@@ -67,6 +67,7 @@ public abstract class AbstractBindingEvaluator extends DefaultContextualizedBind
 	}
 
 	public void delete() {
+		//TODO idf why defined here ?
 		bindingModel.delete();
 		bindingModel = null;
 	}
