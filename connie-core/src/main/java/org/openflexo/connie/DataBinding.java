@@ -186,6 +186,8 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 	}
 
 	public DataBinding(String unparsed, Bindable owner) {
+		//TODO this was put here instead of the deserialization process
+		//TODO might need to understand what this is doing
 		this(owner, Object.class, BindingDefinitionType.GET);
 		setExpression(parseExpression(unparsed));
 		// setUnparsedBinding(unparsed);

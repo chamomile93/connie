@@ -51,7 +51,8 @@ import java.util.regex.Pattern;
  * @author xtof
  *
  */
-
+//TODO idf how to use this yet
+//TODO maybe I need to extend/implement this concept for serialization ?
 public interface Resource {
 
 	/**

@@ -49,6 +49,7 @@ import java.lang.reflect.Type;
  * @author sylvain
  * 
  */
+//TODO this is used in pamela.TypeConverter, I suppose this helps (de)serialize any java object ?
 public interface CustomType extends ConnieType {
 
 	/**

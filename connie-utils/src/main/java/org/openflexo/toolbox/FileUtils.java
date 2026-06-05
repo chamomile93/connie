@@ -79,7 +79,7 @@ import org.openflexo.rm.FileResourceImpl;
 import org.openflexo.rm.InJarResourceImpl;
 import org.openflexo.rm.Resource;
 
-/**
+/*
  * Some File utilities
  * 
  * @author sylvain
@@ -504,6 +504,7 @@ public class FileUtils {
 	}
 	*/
 
+	// TODO might rename to copyFileContentWithEncoding
 	public static String fileContents(File aFile) throws IOException {
 		return fileContents(aFile, null);
 	}

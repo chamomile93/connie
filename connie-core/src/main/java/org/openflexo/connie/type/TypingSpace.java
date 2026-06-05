@@ -47,6 +47,7 @@ import java.lang.reflect.Type;
  * @author sylvain
  *
  */
+//TODO idf and seems important
 public interface TypingSpace {
 
 	/**
