@@ -45,6 +45,7 @@ package org.openflexo.connie.expr;
  * @author sylvain
  *
  */
+//TODO why have DELG, FMLG, JavaGrammar ?
 public interface ExpressionGrammar {
 
 	/**
