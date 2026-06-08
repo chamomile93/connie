@@ -3,6 +3,7 @@ package org.openflexo.connie.java.parser;
 import org.openflexo.connie.expr.BindingPath;
 import org.openflexo.connie.java.expr.JavaBinaryOperatorExpression;
 
+//TODO idf mbrb
 public class TestBindingPathParser extends ParserTestCase {
 
 	public void testSimpleIdentifier() {

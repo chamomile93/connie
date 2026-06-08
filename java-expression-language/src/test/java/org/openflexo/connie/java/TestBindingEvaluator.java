@@ -39,6 +39,7 @@
 
 package org.openflexo.connie.java;
 
+//TODO idf mbrb
 public class TestBindingEvaluator extends EvaluatorTestCase {
 
 	public void testString1() {

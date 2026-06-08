@@ -48,6 +48,8 @@ import org.openflexo.connie.java.util.JavaStaticBindingEvaluator;
 
 import junit.framework.TestCase;
 
+
+//TODO idf mbrb
 public abstract class EvaluatorTestCase extends TestCase {
 
 	public static void genericTest(String bindingPath, Object object, Object expectedResult) {

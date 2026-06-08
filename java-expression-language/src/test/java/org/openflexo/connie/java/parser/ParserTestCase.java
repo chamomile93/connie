@@ -20,6 +20,7 @@ import org.openflexo.connie.java.expr.JavaPrettyPrinter;
 
 import junit.framework.TestCase;
 
+//TODO idf mbrb
 public abstract class ParserTestCase extends TestCase {
 
 	private final BindingFactory BINDING_FACTORY = new JavaBindingFactory();

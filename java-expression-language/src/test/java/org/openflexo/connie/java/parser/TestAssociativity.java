@@ -2,7 +2,7 @@ package org.openflexo.connie.java.parser;
 
 import org.openflexo.connie.expr.BinaryOperatorExpression;
 import org.openflexo.connie.expr.UnaryOperatorExpression;
-
+//TODO idf mbrb
 public class TestAssociativity extends ParserTestCase {
 
 	public void testAssociativity() {

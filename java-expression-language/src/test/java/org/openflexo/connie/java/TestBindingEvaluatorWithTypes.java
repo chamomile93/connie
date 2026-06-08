@@ -41,6 +41,7 @@ package org.openflexo.connie.java;
 
 import java.util.ArrayList;
 
+//TODO idf mbrb
 public class TestBindingEvaluatorWithTypes extends EvaluatorTestCase {
 
 	public void testInstanceof() throws ClassNotFoundException {
