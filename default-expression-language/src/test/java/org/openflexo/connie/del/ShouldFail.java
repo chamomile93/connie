@@ -60,7 +60,8 @@ import org.openflexo.connie.type.TypeUtils;
  * Test type utils
  */
 //TODO idf MBRB
-public class ShouldFail
+public class ShouldFail {
+
 	static final Logger LOGGER = Logger.getLogger(TypeUtils.class.getPackage().getName());
 
 	@Test
