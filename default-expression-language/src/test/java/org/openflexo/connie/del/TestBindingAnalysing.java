@@ -52,6 +52,7 @@ import com.google.common.reflect.TypeToken;
 
 import junit.framework.TestCase;
 
+//TODO idf
 public class TestBindingAnalysing extends TestCase {
 
 	private final BindingFactory BINDING_FACTORY = new DELBindingFactory();

@@ -51,38 +51,40 @@ import org.openflexo.connie.exception.TypeMismatchException;
 
 import junit.framework.TestCase;
 
+//TODO might come back to this
 public class TestBindingEvaluator extends TestCase {
-
+	
 	private static final BindingFactory BINDING_FACTORY = new DELBindingFactory();
-
+	
 	private static final Bindable BINDABLE = new DefaultBindable() {
-
+		
 		@Override
 		public void notifiedBindingDecoded(DataBinding<?> dataBinding) {
 		}
-
+		
 		@Override
 		public void notifiedBindingChanged(DataBinding<?> dataBinding) {
 		}
-
+		
 		@Override
 		public BindingModel getBindingModel() {
 			return null;
 		}
-
+		
 		@Override
 		public BindingFactory getBindingFactory() {
 			return BINDING_FACTORY;
 		}
-
+		
 	};
-
+	
+	//TODO idf why duplicate
 	public static void genericTest(String bindingPath, Object object, Object expectedResult) {
 
 		System.out.println("Evaluate " + bindingPath);
-
+		
 		BindingFactory bindingFactory = new DELBindingFactory();
-
+		
 		Object evaluatedResult = null;
 		try {
 			evaluatedResult = DELBindingEvaluator.evaluateBinding(bindingPath, object, bindingFactory);
@@ -97,7 +99,7 @@ public class TestBindingEvaluator extends TestCase {
 			fail();
 		}
 		System.out.println("Evaluated as " + evaluatedResult);
-
+		
 		if (expectedResult instanceof Number) {
 			if (evaluatedResult instanceof Number) {
 				assertEquals(((Number) expectedResult).doubleValue(), ((Number) evaluatedResult).doubleValue());
@@ -110,7 +112,7 @@ public class TestBindingEvaluator extends TestCase {
 			assertEquals(expectedResult, evaluatedResult);
 		}
 	}
-
+	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -120,12 +122,12 @@ public class TestBindingEvaluator extends TestCase {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("toString", thisIsATest, thisIsATest);
 	}
-
+	
 	public void test2() {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("toString()", thisIsATest, thisIsATest);
 	}
-
+	
 	public void test3() {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("substring(2,8)", thisIsATest, "llo wo");
@@ -140,26 +142,26 @@ public class TestBindingEvaluator extends TestCase {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("toString()+toString()", thisIsATest, "Hello world, this is a testHello world, this is a test");
 	}
-
+	
 	public void test6() {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("toString()+' hash='+object.hashCode()", thisIsATest, thisIsATest + " hash=" + thisIsATest.hashCode());
 	}
-
+	
 	public void test7() {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("substring(0,5)+' '+substring(23,27).toUpperCase()", thisIsATest, "Hello TEST");
 	}
-
+	
 	public void test8() {
 		genericTest("object*2-7", 10, 13);
 	}
-
+	
 	public void test9() {
 		String thisIsATest = "Hello world, this is a test";
 		genericTest("substring(3,length()-2)+' hash='+hashCode()", thisIsATest, "lo world, this is a te hash=" + thisIsATest.hashCode());
 	}
-
+	
 	public void test10() {
 		TestObject object = new TestObject();
 		genericTest("object.getValue(object)", object, 0);
@@ -167,26 +169,27 @@ public class TestBindingEvaluator extends TestCase {
 		genericTest("object.getValue(object)", object, 10);
 		genericTest("object.setValue(object.getValue(object),object)", object, null);
 	}
-
+	
 	public void test11() {
 		TestObject object = new TestObject();
 		genericTest("object.setValue(object.getValue(object)+1,object)", object, null);
 		genericTest("object.getValue(object)", object, 1);
 	}
-
+	
 	public void test12() {
 		TestObject object = new TestObject();
 		genericTest("object.method()", object, null);
 	}
-
+	
+	//TODO might come back to this
 	public static class TestObject {
-
+		
 		private int value = 0;
-
+		
 		public int getValue(TestObject o) {
 			return value;
 		}
-
+		
 		public void setValue(int aValue, TestObject o) {
 			System.out.println("sets value with " + aValue);
 			value = aValue;
