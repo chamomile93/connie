@@ -72,6 +72,7 @@ import junit.framework.TestCase;
 
 public class TestExpressionParser extends TestCase {
 
+	// TODO idf might review the doc for this part
 	private final BindingFactory BINDING_FACTORY = new DELBindingFactory();
 	private DELPrettyPrinter prettyPrinter;
 
@@ -81,6 +82,8 @@ public class TestExpressionParser extends TestCase {
 		prettyPrinter = new DELPrettyPrinter();
 	}
 
+	// TODO idf the difference between expected ( (Evaluated Expression) and
+	// (Evaluation) )
 	private Expression tryToParse(String anExpression, String expectedEvaluatedExpression,
 			Class<? extends Expression> expectedExpressionClass, Object expectedEvaluation, boolean shouldFail) {
 
@@ -131,18 +134,21 @@ public class TestExpressionParser extends TestCase {
 			assertEquals(expectedEvaluatedExpression, prettyPrinter.getStringRepresentation(evaluated, null));
 			if (expectedEvaluation != null) {
 				if (!(evaluated instanceof Constant)) {
-					fail("Evaluated value is not a constant (expected: " + expectedEvaluation + ") but " + expectedEvaluation);
+					//TODO idf the message error
+					fail("Evaluated value is not a constant (expected: " + expectedEvaluation + ") but "
+							+ expectedEvaluation);
 				}
 				if (expectedEvaluation instanceof Number) {
 					Object value = ((Constant<?>) evaluated).getValue();
 					if (value instanceof Number) {
+						//TODO idf why assumes that expectedEvaluation is a double, others tests involves "string"
 						assertEquals(((Number) expectedEvaluation).doubleValue(), ((Number) value).doubleValue());
+					} else {
+						fail("Evaluated value is not a number (expected: " + expectedEvaluation + ") but "
+								+ expectedEvaluation);
 					}
-					else {
-						fail("Evaluated value is not a number (expected: " + expectedEvaluation + ") but " + expectedEvaluation);
-					}
-				}
-				else {
+				} else {
+					//TODO idf the case
 					assertEquals(expectedEvaluation, ((Constant<?>) evaluated).getValue());
 				}
 			}
@@ -151,8 +157,7 @@ public class TestExpressionParser extends TestCase {
 			if (!shouldFail) {
 				e.printStackTrace();
 				fail();
-			}
-			else {
+			} else {
 				System.out.println("Parsing " + anExpression + " has failed as expected: " + e.getMessage());
 			}
 			return null;
@@ -160,8 +165,7 @@ public class TestExpressionParser extends TestCase {
 			if (!shouldFail) {
 				e.printStackTrace();
 				fail();
-			}
-			else {
+			} else {
 				System.out.println("Parsing " + anExpression + " has failed as expected: " + e.getMessage());
 			}
 			return null;
@@ -169,8 +173,7 @@ public class TestExpressionParser extends TestCase {
 			if (!shouldFail) {
 				e.printStackTrace();
 				fail();
-			}
-			else {
+			} else {
 				System.out.println("Parsing " + anExpression + " has failed as expected: " + e.getMessage());
 			}
 			return null;
@@ -179,31 +182,39 @@ public class TestExpressionParser extends TestCase {
 			return null;
 		}
 
-		/*try {
-			System.out.println("\nParsing " + aString);
-			Expression parsed = parser.parse(aString);
-			System.out.println("Successfully parsed as : " + parsed.getClass().getSimpleName());
-			System.out.println("Normalized: " + prettyPrinter.getStringRepresentation(parsed));
-			System.out.println("Evaluated: " + prettyPrinter.getStringRepresentation(parsed.evaluate()));
-			if (shouldFail) {
-				fail();
-			}
-			assertEquals(expectedEvaluatedExpression, prettyPrinter.getStringRepresentation(parsed.evaluate()));
-		} catch (ParseException e) {
-			if (!shouldFail) {
-				e.printStackTrace();
-				fail();
-			} else {
-				System.out.println("Parsing " + aString + " has failed as expected: " + e.getMessage());
-			}
-		} catch (TypeMismatchException e) {
-			if (!shouldFail) {
-				e.printStackTrace();
-				fail();
-			} else {
-				System.out.println("Parsing " + aString + " has failed as expected: " + e.getMessage());
-			}
-		}*/
+		/*
+		 * try {
+		 * System.out.println("\nParsing " + aString);
+		 * Expression parsed = parser.parse(aString);
+		 * System.out.println("Successfully parsed as : " +
+		 * parsed.getClass().getSimpleName());
+		 * System.out.println("Normalized: " +
+		 * prettyPrinter.getStringRepresentation(parsed));
+		 * System.out.println("Evaluated: " +
+		 * prettyPrinter.getStringRepresentation(parsed.evaluate()));
+		 * if (shouldFail) {
+		 * fail();
+		 * }
+		 * assertEquals(expectedEvaluatedExpression,
+		 * prettyPrinter.getStringRepresentation(parsed.evaluate()));
+		 * } catch (ParseException e) {
+		 * if (!shouldFail) {
+		 * e.printStackTrace();
+		 * fail();
+		 * } else {
+		 * System.out.println("Parsing " + aString + " has failed as expected: " +
+		 * e.getMessage());
+		 * }
+		 * } catch (TypeMismatchException e) {
+		 * if (!shouldFail) {
+		 * e.printStackTrace();
+		 * fail();
+		 * } else {
+		 * System.out.println("Parsing " + aString + " has failed as expected: " +
+		 * e.getMessage());
+		 * }
+		 * }
+		 */
 	}
 
 	public void testBindingValue() {
@@ -227,7 +238,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testBindingValue6() {
-		tryToParse("i.am.a(1,2+3,7.8,'foo').little.test(1)", "i.am.a(1,5,7.8,\"foo\").little.test(1)", BindingPath.class, null, false);
+		tryToParse("i.am.a(1,2+3,7.8,'foo').little.test(1)", "i.am.a(1,5,7.8,\"foo\").little.test(1)",
+				BindingPath.class, null, false);
 	}
 
 	public void testNumericValue1() {
@@ -279,7 +291,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testStringValue4() {
-		tryToParse("\"foo1\"+'and'+\"foo2\"", "\"foo1andfoo2\"", DELBinaryOperatorExpression.class, "foo1andfoo2", false);
+		tryToParse("\"foo1\"+'and'+\"foo2\"", "\"foo1andfoo2\"", DELBinaryOperatorExpression.class, "foo1andfoo2",
+				false);
 	}
 
 	public void testExpression1() {
@@ -287,7 +300,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testExpression2() {
-		tryToParse("machin+1*6-8/7+bidule", "(((machin + 6) - 1.1428571428571428) + bidule)", DELBinaryOperatorExpression.class, null,
+		tryToParse("machin+1*6-8/7+bidule", "(((machin + 6) - 1.1428571428571428) + bidule)",
+				DELBinaryOperatorExpression.class, null,
 				false);
 	}
 
@@ -296,7 +310,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testExpression4() {
-		tryToParse("1+function(test,4<7-x)", "(1 + function(test,(4 < (7 - x))))", DELBinaryOperatorExpression.class, null, false);
+		tryToParse("1+function(test,4<7-x)", "(1 + function(test,(4 < (7 - x))))", DELBinaryOperatorExpression.class,
+				null, false);
 	}
 
 	public void testTrigonometricComputing1() {
@@ -308,11 +323,13 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testTrigonometricComputing3() {
-		tryToParse("-(atan(-pi/2)*(3-5*pi/7+8/9))", "1.651284257012876", DELUnaryOperatorExpression.class, 1.651284257012876, false);
+		tryToParse("-(atan(-pi/2)*(3-5*pi/7+8/9))", "1.651284257012876", DELUnaryOperatorExpression.class,
+				1.651284257012876, false);
 	}
 
 	public void testTrigonometricComputing4() {
-		tryToParse("-cos(atan(-pi/2)*(3-5*pi/7+8/9))", "0.08040105411083133", DELUnaryOperatorExpression.class, 0.08040105411083133, false);
+		tryToParse("-cos(atan(-pi/2)*(3-5*pi/7+8/9))", "0.08040105411083133", DELUnaryOperatorExpression.class,
+				0.08040105411083133, false);
 	}
 
 	public void testEquality() {
@@ -321,7 +338,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testEquality2() {
-		tryToParse("binding1.a.b == binding2.a.b*7", "(binding1.a.b = (binding2.a.b * 7))", DELBinaryOperatorExpression.class, null, false);
+		tryToParse("binding1.a.b == binding2.a.b*7", "(binding1.a.b = (binding2.a.b * 7))",
+				DELBinaryOperatorExpression.class, null, false);
 	}
 
 	public void testOr1() {
@@ -382,7 +400,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testComplexBooleanExpression() {
-		tryToParse("a && (c || d && (!f)) ||b", "((a & (c | (d & (!(f))))) | b)", DELBinaryOperatorExpression.class, null, false);
+		tryToParse("a && (c || d && (!f)) ||b", "((a & (c | (d & (!(f))))) | b)", DELBinaryOperatorExpression.class,
+				null, false);
 	}
 
 	public void testArithmeticNumberComparison1() {
@@ -438,7 +457,8 @@ public class TestExpressionParser extends TestCase {
 	}
 
 	public void testConditional4() {
-		tryToParse("a+1 > (a?1:2) ?8+4:5", "(((a + 1) > (a ? 1 : 2)) ? 12 : 5)", DELConditionalExpression.class, null, false);
+		tryToParse("a+1 > (a?1:2) ?8+4:5", "(((a + 1) > (a ? 1 : 2)) ? 12 : 5)", DELConditionalExpression.class, null,
+				false);
 	}
 
 	public void testConditional5() {
@@ -453,20 +473,23 @@ public class TestExpressionParser extends TestCase {
 		tryToParse("2 > 3 ? 3", "", DELConditionalExpression.class, null, true);
 	}
 
-	/*public void test25() throws java.text.ParseException {
-		Date date = new SimpleDateFormat("dd/MM/yy HH:mm").parse("17/12/07 15:55");
-		SimpleDateFormat localeDateFormat = new SimpleDateFormat();
-		tryToParse("(([dd/MM/yy HH:mm,17/12/07 12:54] + [3h] ) + [1min])",
-				"[" + localeDateFormat.toPattern() + "," + localeDateFormat.format(date) + "]", false);
-	}
-	
-	public void test26() throws java.text.ParseException {
-		Date date = new SimpleDateFormat("dd/MM/yy HH:mm").parse("17/12/07 15:55");
-		SimpleDateFormat localeDateFormat = new SimpleDateFormat();
-		tryToParse("([dd/MM/yy HH:mm,17/12/07 12:54] + ( [3h] + [1min]))",
-				"[" + localeDateFormat.toPattern() + "," + localeDateFormat.format(date) + "]", false);
-	}
-	*/
+	/*
+	 * public void test25() throws java.text.ParseException {
+	 * Date date = new SimpleDateFormat("dd/MM/yy HH:mm").parse("17/12/07 15:55");
+	 * SimpleDateFormat localeDateFormat = new SimpleDateFormat();
+	 * tryToParse("(([dd/MM/yy HH:mm,17/12/07 12:54] + [3h] ) + [1min])",
+	 * "[" + localeDateFormat.toPattern() + "," + localeDateFormat.format(date) +
+	 * "]", false);
+	 * }
+	 * 
+	 * public void test26() throws java.text.ParseException {
+	 * Date date = new SimpleDateFormat("dd/MM/yy HH:mm").parse("17/12/07 15:55");
+	 * SimpleDateFormat localeDateFormat = new SimpleDateFormat();
+	 * tryToParse("([dd/MM/yy HH:mm,17/12/07 12:54] + ( [3h] + [1min]))",
+	 * "[" + localeDateFormat.toPattern() + "," + localeDateFormat.format(date) +
+	 * "]", false);
+	 * }
+	 */
 
 	public void testCast() {
 		tryToParse("($java.lang.Integer)2", "($java.lang.Integer)2", DELCastExpression.class, null, false);
@@ -474,7 +497,8 @@ public class TestExpressionParser extends TestCase {
 
 	public void testCast2() {
 		tryToParse("($java.lang.Integer)2+(($java.lang.Integer)2+($java.lang.Double)2)",
-				"(($java.lang.Integer)2 + (($java.lang.Integer)2 + ($java.lang.Double)2))", DELBinaryOperatorExpression.class, null, false);
+				"(($java.lang.Integer)2 + (($java.lang.Integer)2 + ($java.lang.Double)2))",
+				DELBinaryOperatorExpression.class, null, false);
 	}
 
 	public void testInvalidCast() {
@@ -488,7 +512,8 @@ public class TestExpressionParser extends TestCase {
 
 	public void testParameteredCast2() {
 		tryToParse("($java.util.Hashtable<$java.lang.String,$java.util.List<$java.lang.String>>)data.map",
-				"($java.util.Hashtable<$java.lang.String,$java.util.List<$java.lang.String>>)data.map", DELCastExpression.class, null,
+				"($java.util.Hashtable<$java.lang.String,$java.util.List<$java.lang.String>>)data.map",
+				DELCastExpression.class, null,
 				false);
 	}
 

@@ -60,17 +60,19 @@ import com.google.common.reflect.TypeToken;
 import junit.framework.TestCase;
 
 public class TestBinding extends TestCase {
-
+	
 	private static final BindingFactory BINDING_FACTORY = new DELBindingFactory();
 	private static final TestBindingContext BINDING_CONTEXT = new TestBindingContext();
 	private static final TestBindingModel BINDING_MODEL = new TestBindingModel();
-
+	
+	//TODO idf why do the test like this ?
 	public static class TestBindingContext extends DefaultBindable implements BindingEvaluationContext {
-
+		
 		public static String aString = "this is a test";
 		public static boolean aBoolean = false;
 		public static int anInt = 7;
 		public static List<String> aList = new ArrayList<>();
+		//TODO idf here
 		public static String aUTF8string = "Á à é ð";
 		public static Float unMontant = Float.valueOf((float) 18.0);
 
@@ -133,7 +135,7 @@ public class TestBinding extends TestCase {
 			return null;
 		}
 	}
-
+	//TODO idf why do the test like this ?
 	// String aString;
 	// Boolean aBoolean;
 	// List<String> aList;

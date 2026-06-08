@@ -96,6 +96,7 @@ public class TestBindingAnalysing extends TestCase {
 		}
 	}
 
+	//TODO idf why duplicate this method name, is the reasoning different from "TestBinding.java" ?
 	public DataBinding<?> genericTest(String bindingPath, boolean expectedValidity, Type expectedType) {
 
 		System.out.println("Evaluate " + bindingPath);
