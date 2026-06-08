@@ -59,6 +59,7 @@ import org.openflexo.connie.type.TypeUtils;
 /**
  * Test type utils
  */
+
 public class TestTypeUtils {
 
 	static final Logger LOGGER = Logger.getLogger(TypeUtils.class.getPackage().getName());

@@ -48,7 +48,7 @@ import org.openflexo.connie.exception.NullReferenceException;
 import org.openflexo.connie.exception.TypeMismatchException;
 
 import junit.framework.TestCase;
-
+//TODO idf might come back to this 
 public class TestMultipleParametersBindingEvaluator extends TestCase {
 
 	public void test1()
@@ -57,6 +57,7 @@ public class TestMultipleParametersBindingEvaluator extends TestCase {
 		String variable2 = "World";
 
 		BindingFactory bindingFactory = new DELBindingFactory();
+		//TODO idf might come back to this 
 		assertEquals("Hello World !", DELMultipleParametersBindingEvaluator.evaluateBinding("{$variable1}+' '+{$variable2}+' !'",
 				bindingFactory, new Object(), variable1, variable2));
 
