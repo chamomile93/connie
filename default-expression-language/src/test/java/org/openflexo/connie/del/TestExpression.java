@@ -158,6 +158,9 @@ public class TestExpression extends TestCase {
 		}
 	}
 
+
+	//TODO idf might come back to this
+	//TODO idf why the dotted string are named "Variable" "BindingValue" and "BindingPath"
 	public void testPrimitive3() {
 		try {
 			List<BindingPath> vars = ExpressionParser.parse("i.am.a.little.test+and+following+is.not()", BINDABLE).getAllBindingValues();
@@ -173,6 +176,7 @@ public class TestExpression extends TestCase {
 		}
 	}
 
+	//TODO idf why comment this ?
 	/*public static Expression evaluate(Expression expr, final Hashtable<String, ?> variables) throws TypeMismatchException {
 	
 		try {
