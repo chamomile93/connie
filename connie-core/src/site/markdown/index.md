@@ -1,6 +1,6 @@
 [/images/components/connie/ConnieScreenshot] Connie
 
-## Introduction to CONNIE
+# Introduction to CONNIE
 
   CONNIE is a Java library allowing to define and execute an expression-based language over a generic API.
 
@@ -173,7 +173,7 @@ Object value = myBinding.execute(evaluationContext);
   
   More about executing ```DataBinding``` objects in {{{./ExecuteDataBinding.html}Executing DataBinding objects}}
    
-Reference documentation
+## Reference documentation
 
   (advanced) [Defining a binding strategy](DefineBindingStrategy.md)
 

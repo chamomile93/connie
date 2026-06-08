@@ -49,6 +49,7 @@ import org.openflexo.connie.type.Typed;
  * @author sylvain
  * 
  */
+//TODO idf yet
 public interface Property extends Typed {
 
 	public String getName();
