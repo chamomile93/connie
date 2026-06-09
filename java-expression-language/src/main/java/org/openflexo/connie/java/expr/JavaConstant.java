@@ -569,6 +569,7 @@ public abstract class JavaConstant<V> extends Constant<V> {
 		}
 
 		@Override
+		//TODO is the comment below still relevant ?
 		public Object getValue() {
 			// TODO
 			return null;

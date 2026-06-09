@@ -68,6 +68,7 @@ import org.openflexo.connie.binding.UnresolvedSimplePathElement;
 import org.openflexo.connie.type.TypeUtils;
 import org.openflexo.connie.type.UnresolvedType;
 
+//TODO idf why use the term "key-value" coding for variables. To me this imply a "mapping". What's the link with variables ?
 /**
  * This is base implementation for {@link BindingFactory} supporting java key-value conding for variables<br>
  * 
@@ -77,6 +78,7 @@ import org.openflexo.connie.type.UnresolvedType;
  * @author sylvain
  *
  */
+//TODO seems to be the larger abstract base that implements the reflection-based binding machinery (path elements, function lookup, constructor lookup, caching, etc.).
 public abstract class JavaBasedBindingFactory implements BindingFactory {
 	//TODO idf what is this doing
 	static final Logger logger = Logger.getLogger(JavaBasedBindingFactory.class.getPackage().getName());

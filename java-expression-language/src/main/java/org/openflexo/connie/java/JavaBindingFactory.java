@@ -64,6 +64,7 @@ import org.openflexo.connie.java.parser.ExpressionParser;
  * @author sylvain
  *
  */
+//TODO seems to be a concrete subclass that customizes parsing and null-constant behavior for the Java expression language;
 public class JavaBindingFactory extends JavaBasedBindingFactory {
 	//TODO idf why this is instanciated in XMLSerializer and passed to JavaBindingEvaluator.evaluateBinding
 	static final Logger logger = Logger.getLogger(JavaBindingFactory.class.getPackage().getName());
