@@ -19,3 +19,4 @@ build/
 /bugs.txt
 /infer-out/
 .java-version
+.idea
