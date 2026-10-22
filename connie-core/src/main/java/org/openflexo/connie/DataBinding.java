@@ -155,6 +155,13 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 
 	private PropertyChangeSupport pcSupport;
 
+	/**
+	 * What this binding registers on its owner, on the binding model and on the binding variables - rather than the binding itself:
+	 * {@link #equals(Object)} compares bindings by their text, and a {@link PropertyChangeSupport} removes the first listener EQUAL to the
+	 * one it is given. Removing the binding itself could unregister another binding of the same text, and leave this one registered.
+	 */
+	private final PropertyChangeListener changeListener = evt -> propertyChange(evt);
+
 	private Map<BindingEvaluationContext, T> cachedValues = null;
 	private Map<BindingEvaluationContext, BindingPathChangeListener<T>> cachedBindingValueChangeListeners = null;
 
@@ -210,8 +217,8 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 
 	public void delete() {
 		invalidate();
+		stopListening();
 		deleteContainedBindingValues();
-		stopListenToBindingModel();
 		getPropertyChangeSupport().firePropertyChange(getDeletedProperty(), false, true);
 		pcSupport = null;
 	}
@@ -230,6 +237,21 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 		System.out.println("> owner=" + owner);
 		System.out.println("> bindingFactory=" + (owner != null ? owner.getBindingFactory() : null));
 		System.out.println("> listenedBindingModel=" + listenedBindingModel);
+	}
+
+	/**
+	 * Unregister this binding from everything it listens to: its owner, the binding model and binding variables of its owner, and the
+	 * objects the paths of its cached values reach. Its expression is left untouched.<br>
+	 * Use it for a binding that goes away while its expression lives on (a parser builds one only to return its expression), or before
+	 * deleting it: otherwise the owner, and every object it listens to, keep referencing it.
+	 */
+	public void stopListening() {
+		releaseAllEvaluationContexts();
+		stopListenToBindingModel();
+		// Registered by setOwner()
+		if (owner != null && owner.getPropertyChangeSupport() != null) {
+			owner.getPropertyChangeSupport().removePropertyChangeListener(changeListener);
+		}
 	}
 
 	private void deleteContainedBindingValues() {
@@ -267,6 +289,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 	}
 
 	private void initCache() {
+		releaseAllEvaluationContexts();
 		if (cachingStrategy == CachingStrategy.NO_CACHING) {
 			cachedValues = null;
 			cachedBindingValueChangeListeners = null;
@@ -811,7 +834,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 			// model
 
 			if (this.owner != null && this.owner.getPropertyChangeSupport() != null) {
-				this.owner.getPropertyChangeSupport().removePropertyChangeListener(this);
+				this.owner.getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 			}
 			if (this.owner != null && this.owner.getBindingModel() != null) {
 				stopListenToBindingModel();
@@ -835,7 +858,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 			}
 
 			if (owner != null && owner.getPropertyChangeSupport() != null) {
-				owner.getPropertyChangeSupport().addPropertyChangeListener(this);
+				owner.getPropertyChangeSupport().addPropertyChangeListener(changeListener);
 			}
 
 			checkBindingModelListening();
@@ -871,7 +894,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 
 		listenedBindingModel = bindingModel;
 		if (listenedBindingModel != null && listenedBindingModel.getPropertyChangeSupport() != null) {
-			listenedBindingModel.getPropertyChangeSupport().addPropertyChangeListener(this);
+			listenedBindingModel.getPropertyChangeSupport().addPropertyChangeListener(changeListener);
 		}
 
 		if (trackBindingModelChanges) {
@@ -893,7 +916,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 				}
 				else {
 					if (bv.getPropertyChangeSupport() != null) {
-						bv.getPropertyChangeSupport().addPropertyChangeListener(this);
+						bv.getPropertyChangeSupport().addPropertyChangeListener(changeListener);
 						listenedBindingVariables.add(bv);
 					}
 				}
@@ -902,7 +925,7 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 
 		for (BindingVariable bv : listenedBindingVariableToDelete) {
 			if (bv.getPropertyChangeSupport() != null) {
-				bv.getPropertyChangeSupport().removePropertyChangeListener(this);
+				bv.getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 				listenedBindingVariables.remove(bv);
 			}
 		}
@@ -912,12 +935,12 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 	private void stopListenToBindingModel() {
 		for (BindingVariable bv : listenedBindingVariables) {
 			if (bv.getPropertyChangeSupport() != null) {
-				bv.getPropertyChangeSupport().removePropertyChangeListener(this);
+				bv.getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 			}
 		}
 		listenedBindingVariables.clear();
 		if (listenedBindingModel != null) {
-			listenedBindingModel.getPropertyChangeSupport().removePropertyChangeListener(this);
+			listenedBindingModel.getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 			listenedBindingModel = null;
 		}
 	}
@@ -948,12 +971,12 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 			// System.out.println("now: " + evt.getNewValue());
 			if (evt.getOldValue() instanceof BindingModel) {
 				if (((BindingModel) evt.getOldValue()).getPropertyChangeSupport() != null) {
-					((BindingModel) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(this);
+					((BindingModel) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 				}
 			}
 			if (evt.getNewValue() instanceof BindingModel) {
 				if (((BindingModel) evt.getNewValue()).getPropertyChangeSupport() != null) {
-					((BindingModel) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(this);
+					((BindingModel) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(changeListener);
 				}
 			}
 			invalidate();
@@ -967,11 +990,11 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 				// from BindingModel
 				if (evt.getNewValue() instanceof BindingVariable) {
 					// A new BindingVariable was added
-					((BindingVariable) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(this);
+					((BindingVariable) evt.getNewValue()).getPropertyChangeSupport().addPropertyChangeListener(changeListener);
 				}
 				else if (evt.getOldValue() instanceof BindingVariable) {
 					// A new BindingVariable was removed
-					((BindingVariable) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(this);
+					((BindingVariable) evt.getOldValue()).getPropertyChangeSupport().removePropertyChangeListener(changeListener);
 				}
 				invalidate();
 			}
@@ -1372,6 +1395,43 @@ public class DataBinding<T> implements HasPropertyChangeSupport, PropertyChangeL
 	public void clearCacheForBindingEvaluationContext(BindingEvaluationContext context) {
 		if (cachedValues != null) {
 			cachedValues.remove(context);
+		}
+	}
+
+	/**
+	 * Forget everything this binding holds for supplied context: the cached value, and the listener that keeps that value up to date. The
+	 * listener is registered on every object of the evaluated path, which may belong to other models: it is unregistered from them. <br>
+	 * Unlike {@link #clearCacheForBindingEvaluationContext(BindingEvaluationContext)}, which only invalidates a value, this is meant for a
+	 * context that goes away: without it this binding, and all the objects its path reaches, keep referencing that context.
+	 * 
+	 * @param context
+	 */
+	public void releaseEvaluationContext(BindingEvaluationContext context) {
+		if (cachedValues != null) {
+			cachedValues.remove(context);
+		}
+		if (cachedBindingValueChangeListeners != null) {
+			BindingPathChangeListener<T> listener = cachedBindingValueChangeListeners.remove(context);
+			if (listener != null) {
+				listener.delete();
+			}
+		}
+	}
+
+	/**
+	 * Release every context this binding holds a cached value or listener for
+	 * 
+	 * @see #releaseEvaluationContext(BindingEvaluationContext)
+	 */
+	private void releaseAllEvaluationContexts() {
+		if (cachedBindingValueChangeListeners != null) {
+			for (BindingPathChangeListener<T> listener : new ArrayList<>(cachedBindingValueChangeListeners.values())) {
+				listener.delete();
+			}
+			cachedBindingValueChangeListeners.clear();
+		}
+		if (cachedValues != null) {
+			cachedValues.clear();
 		}
 	}
 

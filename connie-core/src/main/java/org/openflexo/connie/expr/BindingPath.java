@@ -69,6 +69,7 @@ import org.openflexo.connie.binding.SettableBindingPathElement;
 import org.openflexo.connie.binding.SimpleMethodPathElement;
 import org.openflexo.connie.binding.SimplePathElement;
 import org.openflexo.connie.binding.TargetObject;
+import org.openflexo.connie.binding.UnresolvedFunctionPathElement;
 import org.openflexo.connie.binding.UnresolvedSimplePathElement;
 import org.openflexo.connie.binding.javareflect.InvalidKeyValuePropertyException;
 import org.openflexo.connie.exception.InvocationTargetTransformException;
@@ -172,10 +173,36 @@ public class BindingPath extends Expression implements PropertyChangeListener, C
 		clear();
 	}
 
+	/**
+	 * What this path registers on its binding variable - rather than the path itself: {@link #equals(Object)} compares paths by their
+	 * text, and a {@link java.beans.PropertyChangeSupport} removes the first listener EQUAL to the one it is given. Removing the path
+	 * itself could unregister another path of the same text (the same variable used by another binding), and leave this one registered.
+	 */
+	private PropertyChangeListener bindingVariableListener = evt -> propertyChange(evt);
+
+	private void listenToBindingVariable() {
+		if (bindingVariable != null && bindingVariable.getPropertyChangeSupport() != null) {
+			bindingVariable.getPropertyChangeSupport().addPropertyChangeListener(BindingVariable.TYPE_PROPERTY, bindingVariableListener);
+			bindingVariable.getPropertyChangeSupport().addPropertyChangeListener(BindingVariable.VARIABLE_NAME_PROPERTY,
+					bindingVariableListener);
+		}
+	}
+
+	private void stopListeningToBindingVariable() {
+		if (bindingVariable != null && bindingVariable.getPropertyChangeSupport() != null) {
+			bindingVariable.getPropertyChangeSupport().removePropertyChangeListener(BindingVariable.TYPE_PROPERTY, bindingVariableListener);
+			bindingVariable.getPropertyChangeSupport().removePropertyChangeListener(BindingVariable.VARIABLE_NAME_PROPERTY,
+					bindingVariableListener);
+		}
+	}
+
 	@Override
 	public BindingPath clone() {
 		try {
-			return (BindingPath) super.clone();
+			BindingPath returned = (BindingPath) super.clone();
+			// A clone has its own listener, otherwise it would share the registration of this path
+			returned.bindingVariableListener = evt -> returned.propertyChange(evt);
+			return returned;
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			return null;
@@ -207,15 +234,9 @@ public class BindingPath extends Expression implements PropertyChangeListener, C
 	public void setBindingVariable(BindingVariable aBindingVariable) {
 		if (bindingVariable != aBindingVariable) {
 			clearSerializationRepresentation();
-			if (bindingVariable != null && bindingVariable.getPropertyChangeSupport() != null) {
-				bindingVariable.getPropertyChangeSupport().removePropertyChangeListener(BindingVariable.TYPE_PROPERTY, this);
-				bindingVariable.getPropertyChangeSupport().removePropertyChangeListener(BindingVariable.VARIABLE_NAME_PROPERTY, this);
-			}
+			stopListeningToBindingVariable();
 			bindingVariable = aBindingVariable;
-			if (bindingVariable != null && bindingVariable.getPropertyChangeSupport() != null) {
-				bindingVariable.getPropertyChangeSupport().addPropertyChangeListener(BindingVariable.TYPE_PROPERTY, this);
-				bindingVariable.getPropertyChangeSupport().addPropertyChangeListener(BindingVariable.VARIABLE_NAME_PROPERTY, this);
-			}
+			listenToBindingVariable();
 			if (getBindingPath() != null && getBindingPath().size() > 0) {
 				propagateBindingElementChanged(bindingVariable, 0);
 			}
@@ -721,6 +742,7 @@ public class BindingPath extends Expression implements PropertyChangeListener, C
 
 	public void clear() {
 		clearBindingPathElements();
+		stopListeningToBindingVariable();
 		bindingVariable = null;
 		invalidate();
 
@@ -777,7 +799,10 @@ public class BindingPath extends Expression implements PropertyChangeListener, C
 			isFirst = false;
 		}
 		for (BindingPathElement e : getBindingPath()) {
-			sb.append((isFirst ? "" : ".") + e.getSerializationRepresentation());
+			if (e != null) {
+				sb.append((isFirst ? "" : ".") + e.getSerializationRepresentation());
+			}
+			// TODO investigate on which conditions an element might be null (does not seem sound to me)
 			isFirst = false;
 		}
 		return sb.toString();
@@ -862,6 +887,17 @@ public class BindingPath extends Expression implements PropertyChangeListener, C
 					replaceBindingPathElementAtIndex(resolvedElement, i);
 					// HACK: Because everything was invalidated, do it again !
 					// TODO: can we do something better ????
+					doItAgain = true;
+					element = resolvedElement;
+				}
+			}
+
+			if (element instanceof UnresolvedFunctionPathElement) {
+				// Same for a call whose kind could not be decided when it was built, because its parent was itself a
+				// call and had no type yet. The preceding elements are resolved by now, so ask the factory again.
+				SimpleMethodPathElement<?> resolvedElement = ((UnresolvedFunctionPathElement) element).attemptResolvingFromParent();
+				if (resolvedElement != null && !(resolvedElement instanceof UnresolvedFunctionPathElement)) {
+					replaceBindingPathElementAtIndex(resolvedElement, i);
 					doItAgain = true;
 					element = resolvedElement;
 				}
